@@ -255,9 +255,229 @@ main {
   }
 }
 
+/* ===== NEON STUDY INTRO SCREEN ===== */
+
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 50% 42%,
+      rgba(0, 245, 255, .12), transparent 35%),
+    radial-gradient(ellipse at 80% 20%,
+      rgba(139, 92, 246, .13), transparent 40%),
+    #080b14;
+  transition: opacity .65s ease, visibility .65s ease;
+}
+
+.intro-screen::before,
+.intro-screen::after {
+  content: "";
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border: 1px solid rgba(0, 245, 255, .15);
+  border-radius: 50%;
+  box-shadow: 0 0 45px rgba(0, 245, 255, .07);
+  animation: introOrbit 12s linear infinite;
+  pointer-events: none;
+}
+
+.intro-screen::after {
+  width: 390px;
+  height: 390px;
+  border-color: rgba(139, 92, 246, .15);
+  animation-direction: reverse;
+  animation-duration: 18s;
+}
+
+.intro-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+  animation: introRise .9s ease both;
+}
+
+.intro-tag {
+  display: inline-block;
+  padding: 8px 13px;
+  border: 1px solid rgba(0, 245, 255, .28);
+  border-radius: 999px;
+  color: var(--cyan);
+  font-size: 10px;
+  letter-spacing: 3px;
+  background: rgba(0, 245, 255, .045);
+  margin-bottom: 30px;
+}
+
+.intro-logo {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 24px;
+  border: 1px solid rgba(0, 245, 255, .65);
+  border-radius: 25px;
+  color: var(--cyan);
+  font-size: 39px;
+  font-weight: 900;
+  background: linear-gradient(145deg, #14283a, #101020);
+  box-shadow:
+    0 0 20px rgba(0, 245, 255, .18),
+    inset 0 0 20px rgba(0, 245, 255, .07);
+  animation: introPulse 3s ease-in-out infinite;
+}
+
+.intro-title {
+  margin: 0;
+  font-size: clamp(38px, 9vw, 68px);
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.intro-title span {
+  color: var(--cyan);
+  text-shadow: 0 0 25px rgba(0, 245, 255, .35);
+}
+
+.intro-subtitle {
+  margin: 20px auto 0;
+  max-width: 390px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.intro-features {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 27px 0 32px;
+}
+
+.intro-features span {
+  padding: 8px 11px;
+  color: #c7d8ed;
+  border: 1px solid #27344b;
+  border-radius: 8px;
+  background: rgba(16, 23, 39, .75);
+  font-size: 11px;
+}
+
+.intro-enter {
+  width: 100%;
+  max-width: 290px;
+  padding: 16px 20px;
+  border: 1px solid var(--cyan);
+  border-radius: 12px;
+  color: #061018;
+  background: var(--cyan);
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  box-shadow: 0 0 25px rgba(0, 245, 255, .17);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.intro-enter:active {
+  transform: scale(.97);
+}
+
+@media (hover: hover) {
+  .intro-enter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 35px rgba(0, 245, 255, .35);
+  }
+}
+
+.intro-footer {
+  margin-top: 25px;
+  color: #64728b;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.intro-screen.leaving {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes introRise {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes introPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 245, 255, .15);
+  }
+  50% {
+    box-shadow: 0 0 38px rgba(0, 245, 255, .3);
+  }
+}
+
+@keyframes introOrbit {
+  from { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.08); }
+  to { transform: rotate(360deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-screen,
+  .intro-content,
+  .intro-logo,
+  .intro-screen::before,
+  .intro-screen::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 </style>
 </head>
 <body>
+  
+<div class="intro-screen" id="introScreen">
+  <div class="intro-content">
+    <div class="intro-tag">YOUR ACADEMIC FUTURE STARTS HERE</div>
+
+    <div class="intro-logo">N</div>
+
+    <h1 class="intro-title">
+      NEON<span>STUDY</span>
+    </h1>
+
+    <p class="intro-subtitle">
+      Your goals. Your schedule. Your future.
+      <br>
+      Build better study habits, one mission at a time.
+    </p>
+
+    <div class="intro-features">
+      <span>◷ Focus Timer</span>
+      <span>▦ Smart Planner</span>
+      <span>↗ Track Progress</span>
+    </div>
+
+    <button class="intro-enter" id="enterAppBtn" type="button">
+      ENTER NEON STUDY&nbsp; →
+    </button>
+
+    <div class="intro-footer">
+      NEON STUDY PRO · BUILD YOUR FUTURE
+    </div>
+  </div>
+</div>
+
 <div class="app">
 <aside class="sidebar">
   <div class="brand">NEON<span>STUDY</span><small>ACADEMIC COMMAND CENTER</small></div>
@@ -436,6 +656,19 @@ const SUPABASE_KEY = "sb_publishable_eA6nIMeSrKaiouIxlMBVuA_MfNTSdQ7";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const $ = id => document.getElementById(id);
+
+const introScreen = document.getElementById("introScreen");
+const enterAppBtn = document.getElementById("enterAppBtn");
+
+if (introScreen && enterAppBtn) {
+  enterAppBtn.addEventListener("click", () => {
+    introScreen.classList.add("leaving");
+
+    window.setTimeout(() => {
+      introScreen.remove();
+    }, 700);
+  });
+}
 
 let currentUser = null;
 let tasks = [];
