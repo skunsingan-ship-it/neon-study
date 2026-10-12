@@ -525,7 +525,8 @@ main {
 
 <div id="plannerSection" class="hidden">
   <button id="enablePushBtn" type="button">🔔 Enable Notifications</button>
-  <button id="testPushBtn" type="button">🧪 Test Push Notification</button>
+
+
 <section class="welcome">
   <div class="eyebrow">YOUR NEXT LEVEL STARTS HERE</div>
   <h1>Plan smart.<br><span>Study better.</span></h1>
@@ -899,6 +900,10 @@ async function logIn() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     showMessage("Login successful.");
+
+if ("Notification" in window && Notification.permission === "granted") {
+  enablePushNotifications();
+}
   } catch (error) {
     showMessage(error.message || "Login failed.", true);
   } finally {
