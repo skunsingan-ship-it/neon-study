@@ -1,0 +1,1021 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b14">
+<title>NEON STUDY | Pro Planner</title>
+
+<style>
+:root{--bg:#080b14;--panel:#101727;--cyan:#00f5ff;--pink:#ff3cac;--purple:#8b5cf6;--text:#eefaff;--muted:#8c9ab5;--border:rgba(0,245,255,.16)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px system-ui,Arial,sans-serif;min-height:100vh}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.sidebar{position:fixed;inset:0 auto 0 0;width:235px;padding:25px 16px;background:#0b1120;border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:10}
+.brand{font-size:21px;font-weight:900;letter-spacing:1px;padding:0 10px}
+.brand span{color:var(--cyan)}
+.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px;margin-top:5px}
+.nav-label{font-size:10px;color:#62718b;letter-spacing:2px;margin:35px 10px 12px}
+.nav{display:grid;gap:6px}
+.nav button{display:flex;align-items:center;gap:12px;text-align:left;width:100%;padding:13px 12px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--muted)}
+.nav button:hover{background:#141e30;color:var(--text)}
+.nav button.active{color:var(--cyan);background:#00f5ff0c;border-color:#00f5ff25}
+.nav-icon{width:22px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto;padding:12px 10px;color:var(--muted);font-size:11px;line-height:1.7}
+.main{margin-left:235px;min-height:100vh;padding:30px clamp(16px,4vw,45px) 50px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.topbar h2{margin:0;font-size:22px}
+.topbar p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.status{font-size:11px;color:var(--cyan);overflow-wrap:anywhere}
+.avatar{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:#14253b;border:1px solid var(--border);color:var(--cyan);font-weight:800}
+.welcome{margin:28px 0 22px;padding:30px;border:1px solid var(--border);border-radius:17px;background:radial-gradient(ellipse at 90% 10%,#34205266,transparent 45%),radial-gradient(ellipse at 10% 100%,#003d4c55,transparent 55%),linear-gradient(135deg,#121d30,#0c1220)}
+.eyebrow{color:var(--pink);font-size:10px;letter-spacing:3px}
+.welcome h1{font-size:clamp(27px,4vw,43px);line-height:1.1;margin:12px 0}
+.welcome h1 span{color:var(--cyan)}
+.welcome p{color:var(--muted);line-height:1.7;margin:0;max-width:580px}
+.section-title{font-size:16px;font-weight:800;margin:0 0 15px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:20px 0 28px}
+.card,.panel{background:linear-gradient(145deg,#121c2c,#0c111e);border:1px solid var(--border);border-radius:14px}
+.card{padding:18px;min-width:0}
+.card-label{font-size:10px;color:var(--muted);letter-spacing:1px}
+.number{font-size:29px;font-weight:850;margin:10px 0 4px;overflow-wrap:anywhere}
+.cyan{color:var(--cyan)}.pink{color:var(--pink)}.purple{color:#b69aff}
+.card-note{font-size:10px;color:var(--muted)}
+.content-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(240px,1fr);gap:16px}
+.panel{padding:21px;margin-bottom:17px;min-width:0}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.panel-head h3{font-size:15px;margin:0}
+.btn{border:1px solid #34435a;border-radius:9px;padding:10px 13px;background:#111c2b;color:var(--text);font-weight:700}
+.btn:hover{filter:brightness(1.2)}
+.btn.primary{background:var(--cyan);color:#061018;border-color:var(--cyan)}
+.btn.danger{color:var(--pink);border-color:#ff3cac55}
+.btn.small{padding:7px 10px;font-size:11px}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field label{font-size:11px;color:var(--muted)}
+input,select{min-width:0;width:100%;padding:11px 12px;border:1px solid #28364e;border-radius:9px;color:var(--text);background:#080d18}
+input[type="datetime-local"]{color-scheme:dark}
+select option{background:#101727}
+.task-form{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.form-bottom{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end;margin-top:12px}
+.task-list{display:grid;gap:10px}
+.task{display:flex;align-items:center;gap:11px;padding:13px;border:1px solid #25334a;background:#0b1220;border-radius:11px;min-width:0}
+.task.done{opacity:.55}
+.task.done .task-title{text-decoration:line-through}
+.task input[type=checkbox]{width:17px;height:17px;accent-color:var(--cyan);flex-shrink:0;padding:0}
+.task-main{flex:1;min-width:0}
+.task-title{font-weight:750;overflow-wrap:anywhere}
+.task-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;font-size:11px;color:var(--muted)}
+.task-actions{display:flex;gap:5px}
+.empty{text-align:center;padding:26px 8px;color:var(--muted);font-size:12px}
+.progress-track{height:7px;background:#263044;border-radius:20px;overflow:hidden;margin:12px 0}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));transition:width .3s}
+.progress-row{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quick-btn{text-align:left;padding:15px;background:#0b1220;color:var(--text);border:1px solid #25334a;border-radius:11px}
+.quick-btn span{display:block;font-size:19px;margin-bottom:9px}
+.quick-btn strong{display:block;font-size:12px}
+.quick-btn small{display:block;color:var(--muted);margin-top:5px;font-size:10px}
+.message{font-size:12px;color:var(--muted);margin-top:12px;overflow-wrap:anywhere;min-height:15px}
+.view{display:none}
+.view.active{display:block}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:15px}
+.toolbar .active{background:var(--cyan);color:#061018;border-color:var(--cyan)}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.cal-day-name{text-align:center;color:var(--muted);font-size:10px;padding:8px 0}
+.cal-day{min-height:60px;padding:8px 4px;text-align:center;border:1px solid #25334a;border-radius:8px;background:#0b1220;color:var(--text)}
+.cal-day.muted-day{opacity:.35}
+.cal-day.today{border-color:var(--cyan);color:var(--cyan)}
+.cal-day.selected{background:#00f5ff18;border-color:var(--cyan)}
+.cal-day.has-task:after{content:"•";display:block;color:var(--pink);font-size:16px;line-height:12px}
+.cal-events{margin-top:20px}
+.timer-wrap{text-align:center;padding:20px 0}
+.timer-mode{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
+.timer-clock{font-size:clamp(54px,12vw,90px);font-weight:850;letter-spacing:2px;margin:22px 0;color:var(--cyan)}
+.timer-caption{font-size:12px;color:var(--muted)}
+.timer-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.big-progress{font-size:54px;font-weight:850;color:var(--cyan)}
+footer{text-align:center;color:#586782;font-size:10px;letter-spacing:1px;margin-top:30px}
+.hidden{display:none!important}
+@media(max-width:1050px){
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.content-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+.sidebar{width:100%;height:64px;inset:auto 0 0;padding:5px 8px;border-right:0;border-top:1px solid var(--border);background:#0b1120}
+.sidebar .brand,.sidebar .nav-label,.sidebar-bottom{display:none}
+.nav{display:flex;justify-content:space-around;gap:2px;height:100%}
+.nav button{flex:1;min-width:0;justify-content:center;flex-direction:column;gap:2px;padding:5px 2px;font-size:9px;border-radius:8px}
+.nav-icon{font-size:17px;width:auto}
+.main{margin-left:0;padding:19px 13px 85px}
+.topbar h2{font-size:19px}
+.welcome{padding:23px 19px;margin-top:21px}
+.stats{gap:9px}
+.card{padding:13px}
+.number{font-size:25px}
+.panel{padding:15px}
+.task-form,.form-bottom{grid-template-columns:1fr}
+.cal-day{min-height:45px;padding:7px 1px;font-size:12px}
+.calendar-grid{gap:3px}
+.cal-day-name{font-size:9px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">NEON<span>STUDY</span><small>ACADEMIC COMMAND CENTER</small></div>
+  <div class="nav-label">WORKSPACE</div>
+  <nav class="nav" id="navigation">
+    <button class="active" data-view="dashboard"><span class="nav-icon">⌂</span>Dashboard</button>
+    <button data-view="calendar"><span class="nav-icon">▦</span>Calendar</button>
+    <button data-view="focus"><span class="nav-icon">◷</span>Focus Timer</button>
+    <button data-view="progress"><span class="nav-icon">↗</span>Progress</button>
+    <button data-view="ai"><span class="nav-icon">✧</span>AI Assistant</button>
+  </nav>
+  <div class="sidebar-bottom">● NEON STUDY PRO<br>Build your future, one task at a time.</div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div>
+    <h2 id="pageTitle">Dashboard</h2>
+    <p id="todayLabel">Your academic command center</p>
+  </div>
+  <div class="top-actions">
+    <span id="connectionStatus" class="status">● CONNECTING</span>
+    <div class="avatar">N</div>
+    <button id="logoutBtn" class="btn small danger hidden" type="button">LOG OUT</button>
+  </div>
+</header>
+
+<section id="authSection" class="panel" style="max-width:440px;margin:35px auto">
+  <h3 class="section-title">ACCESS TERMINAL</h3>
+  <p style="color:var(--muted);line-height:1.7">Log in to sync your missions across sessions.</p>
+  <div class="field" style="margin:12px 0">
+    <label for="email">EMAIL</label>
+    <input id="email" type="email" placeholder="you@example.com" autocomplete="email">
+  </div>
+  <div class="field" style="margin:12px 0">
+    <label for="password">PASSWORD</label>
+    <input id="password" type="password" placeholder="Your password" autocomplete="current-password">
+  </div>
+  <div class="toolbar">
+    <button class="btn primary" id="loginBtn" type="button">LOG IN</button>
+    <button class="btn" id="signupBtn" type="button">CREATE ACCOUNT</button>
+  </div>
+  <div id="authMessage" class="message">Connecting to Supabase...</div>
+</section>
+
+<div id="plannerSection" class="hidden">
+<section class="welcome">
+  <div class="eyebrow">YOUR NEXT LEVEL STARTS HERE</div>
+  <h1>Plan smart.<br><span>Study better.</span></h1>
+  <p>Welcome to your personal academic workspace. Organize assignments, meet deadlines, and make every study session count.</p>
+</section>
+
+<section id="dashboardView" class="view active">
+  <div class="stats">
+    <div class="card"><div class="card-label">TOTAL MISSIONS</div><div class="number cyan" id="totalCount">0</div><div class="card-note">All your tasks</div></div>
+    <div class="card"><div class="card-label">COMPLETED</div><div class="number pink" id="doneCount">0</div><div class="card-note">Missions finished</div></div>
+    <div class="card"><div class="card-label">REMAINING</div><div class="number purple" id="remainingCount">0</div><div class="card-note">Still in progress</div></div>
+    <div class="card"><div class="card-label">COMPLETION</div><div class="number" id="progressText">0%</div><div class="progress-track"><div id="progressFill" class="progress-fill"></div></div></div>
+  </div>
+
+  <div class="content-grid">
+    <div>
+      <section class="panel">
+        <div class="panel-head"><h3>＋ Add New Mission</h3></div>
+        <form id="taskForm">
+          <div class="task-form">
+            <div class="field"><label for="taskTitle">TASK / ASSIGNMENT</label><input id="taskTitle" maxlength="120" required placeholder="e.g. Review Electric Flux"></div>
+            <div class="field"><label for="taskSubject">SUBJECT</label><input id="taskSubject" maxlength="60" placeholder="e.g. Physics"></div>
+          </div>
+          <div class="form-bottom">
+            <div class="field"><label for="dueDate">STUDY DATE &amp; TIME</label><input id="dueDate" type="datetime-local" required></div>
+            <button class="btn primary" id="addBtn" type="submit">＋ ADD TASK</button>
+          </div>
+        </form>
+        <div id="taskMessage" class="message"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h3>Today's Missions</h3><button class="btn small" type="button" data-go="calendar">Calendar ↗</button></div>
+        <div id="todayTasks" class="task-list"></div>
+      </section>
+    </div>
+    <div>
+      <section class="panel">
+        <div class="panel-head"><h3>Overall Progress</h3></div>
+        <div class="progress-row"><span>Task completion</span><strong id="progressLabel">0%</strong></div>
+        <div class="progress-track"><div id="progressFill2" class="progress-fill"></div></div>
+        <p style="font-size:11px;color:var(--muted);line-height:1.7">Small, consistent study sessions can help you reach your academic goals.</p>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head"><h3>Mission Log</h3></div>
+    <div class="toolbar" id="filterToolbar">
+      <button class="btn small active" type="button" data-filter="all">ALL</button>
+      <button class="btn small" type="button" data-filter="active">ACTIVE</button>
+      <button class="btn small" type="button" data-filter="done">COMPLETED</button>
+    </div>
+    <div id="taskList" class="task-list"></div>
+  </section>
+</section>
+
+<section id="calendarView" class="view">
+  <section class="panel">
+    <div class="calendar-head">
+      <button class="btn" id="prevMonth" type="button">←</button>
+      <h3 id="monthTitle" style="margin:0">Calendar</h3>
+      <button class="btn" id="nextMonth" type="button">→</button>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="cal-events">
+      <h3 class="section-title" id="selectedDateTitle">Selected date</h3>
+      <div id="calendarTasks" class="task-list"></div>
+    </div>
+  </section>
+</section>
+
+<section id="focusView" class="view">
+  <section class="panel">
+    <div class="timer-wrap">
+      <div class="eyebrow">FOCUS ON WHAT MATTERS</div>
+      <h3 class="section-title" style="margin-top:12px">Pomodoro Focus Timer</h3>
+      <div class="timer-mode">
+        <button class="btn small active" type="button" data-minutes="25" data-mode="Focus">Focus · 25 min</button>
+        <button class="btn small" type="button" data-minutes="5" data-mode="Short break">Short break · 5 min</button>
+        <button class="btn small" type="button" data-minutes="15" data-mode="Long break">Long break · 15 min</button>
+      </div>
+      <div id="timerClock" class="timer-clock">25:00</div>
+      <div id="timerCaption" class="timer-caption">FOCUS SESSION · READY WHEN YOU ARE</div>
+      <div class="timer-actions" style="margin-top:22px">
+        <button class="btn primary" id="timerStart" type="button">▶ START</button>
+        <button class="btn" id="timerReset" type="button">↺ RESET</button>
+      </div>
+      <p class="message">Tip: choose one task before starting your focus session.</p>
+    </div>
+  </section>
+</section>
+
+<section id="progressView" class="view">
+  <div class="stats">
+    <div class="card"><div class="card-label">TOTAL TASKS</div><div class="number cyan" id="statTotal">0</div></div>
+    <div class="card"><div class="card-label">COMPLETED</div><div class="number pink" id="statDone">0</div></div>
+    <div class="card"><div class="card-label">ACTIVE</div><div class="number purple" id="statActive">0</div></div>
+    <div class="card"><div class="card-label">COMPLETION RATE</div><div class="big-progress" id="statPercent">0%</div></div>
+  </div>
+  <section class="panel">
+    <h3 class="section-title">Task Completion</h3>
+    <div class="progress-row"><span>Overall progress</span><strong id="statLabel">0%</strong></div>
+    <div class="progress-track"><div id="statFill" class="progress-fill"></div></div>
+  </section>
+</section>
+
+<section id="aiView" class="view">
+  <section class="panel">
+    <div class="eyebrow">COMING IN THE FINAL PHASE</div>
+    <h3 class="section-title" style="margin-top:12px">✧ AI Study Assistant</h3>
+    <p style="color:var(--muted);line-height:1.8">Our last feature will add study explanations, reviewer generation, and quiz practice. We will connect it after the planner, calendar, and timer are tested.</p>
+    <div class="quick-grid">
+      <div class="quick-btn"><span>✎</span><strong>Reviewer generator</strong><small>Turn notes into study guides</small></div>
+      <div class="quick-btn"><span>?</span><strong>Quiz practice</strong><small>Practice by topic</small></div>
+    </div>
+  </section>
+</section>
+</div>
+
+<footer>NEON STUDY PRO // BUILD YOUR FUTURE</footer>
+</main>
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const SUPABASE_URL = "https://ygokotekqbsuwhhoermb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_eA6nIMeSrKaiouIxlMBVuA_MfNTSdQ7";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const $ = id => document.getElementById(id);
+
+let currentUser = null;
+let tasks = [];
+let activeFilter = "all";
+let selectedDate = new Date();
+let calendarMonth = new Date();
+let timerSeconds = 25 * 60;
+let timerInterval = null;
+let timerRunning = false;
+let timerMode = 25;
+
+/* HELPERS */
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+
+function dateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function todayString() {
+  return dateKey(new Date());
+}
+
+function taskDateKey(task) {
+  if (task.due_at) {
+    const date = new Date(task.due_at);
+    if (!Number.isNaN(date.getTime())) return dateKey(date);
+  }
+  return task.due_date || "";
+}
+
+function taskSchedule(task) {
+  if (task.due_at) {
+    const date = new Date(task.due_at);
+    if (!Number.isNaN(date.getTime())) {
+      return date.toLocaleString("en-PH", {
+        month: "short", day: "numeric", year: "numeric",
+        hour: "numeric", minute: "2-digit"
+      });
+    }
+  }
+
+  if (task.due_date) {
+    const date = new Date(task.due_date + "T12:00:00");
+    if (!Number.isNaN(date.getTime())) {
+      return date.toLocaleDateString("en-PH", {
+        month: "short", day: "numeric", year: "numeric"
+      });
+    }
+  }
+
+  return "No study time set";
+}
+
+function isCompleted(task) {
+  return task.completed === true;
+}
+
+function showMessage(message, isError = false, target = "authMessage") {
+  const element = $(target);
+  if (!element) return;
+  element.textContent = message;
+  element.style.color = isError ? "#ff6b81" : "#48e5c2";
+}
+
+function setConnection(message, connected = false) {
+  const element = $("connectionStatus");
+  if (!element) return;
+  element.textContent = "● " + message;
+  element.style.color = connected ? "var(--cyan)" : "var(--muted)";
+}
+
+/* AUTHENTICATION */
+
+async function signUp() {
+  const email = $("email")?.value.trim();
+  const password = $("password")?.value;
+
+  if (!email || !password) {
+    showMessage("Enter your email and password.", true);
+    return;
+  }
+
+  if (password.length < 6) {
+    showMessage("Password must be at least 6 characters.", true);
+    return;
+  }
+
+  const button = $("signupBtn");
+  if (button) button.disabled = true;
+
+  try {
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+
+    showMessage(data.session
+      ? "Account created. You are now signed in."
+      : "Account created! Check your email if confirmation is required."
+    );
+  } catch (error) {
+    showMessage(error.message || "Could not create your account.", true);
+  } finally {
+    if (button) button.disabled = false;
+  }
+}
+
+async function logIn() {
+  const email = $("email")?.value.trim();
+  const password = $("password")?.value;
+
+  if (!email || !password) {
+    showMessage("Enter your email and password.", true);
+    return;
+  }
+
+  const button = $("loginBtn");
+  if (button) button.disabled = true;
+
+  try {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    showMessage("Login successful.");
+  } catch (error) {
+    showMessage(error.message || "Login failed.", true);
+  } finally {
+    if (button) button.disabled = false;
+  }
+}
+
+async function logOut() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  } catch (error) {
+    showMessage(error.message || "Could not log out.", true);
+  }
+}
+
+function updateSessionUI() {
+  const signedIn = Boolean(currentUser);
+  const auth = $("authSection");
+  const planner = $("plannerSection");
+  const logout = $("logoutBtn");
+
+  if (auth) {
+    auth.classList.toggle("hidden", signedIn);
+    auth.style.display = signedIn ? "none" : "";
+  }
+
+  if (planner) {
+    planner.classList.toggle("hidden", !signedIn);
+    planner.style.display = signedIn ? "block" : "none";
+  }
+
+  if (logout) logout.classList.toggle("hidden", !signedIn);
+
+  if (signedIn) {
+    setConnection("CONNECTED", true);
+  } else {
+    setConnection("NOT SIGNED IN");
+    tasks = [];
+    renderAllTasks();
+  }
+}
+
+/* SUPABASE TASKS */
+
+async function loadTasks() {
+  if (!currentUser) {
+    tasks = [];
+    renderAllTasks();
+    return;
+  }
+
+  setConnection("SYNCING...");
+
+  try {
+    const { data, error } = await supabase
+      .from("study_tasks")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    tasks = data || [];
+    setConnection("SYNCED", true);
+    renderAllTasks();
+  } catch (error) {
+    console.error("Task loading error:", error);
+    setConnection("SYNC ERROR");
+    showMessage(
+      "Could not load tasks. Check your Supabase table and access policies.",
+      true
+    );
+  }
+}
+
+async function addTask(event) {
+  event.preventDefault();
+
+  if (!currentUser) {
+    showMessage("Please sign in first.", true, "taskMessage");
+    return;
+  }
+
+  const title = $("taskTitle")?.value.trim();
+  const subject = $("taskSubject")?.value.trim() || "General";
+  const dateTime = $("dueDate")?.value;
+
+  if (!title || !dateTime) {
+    showMessage("Enter a task title and date/time.", true, "taskMessage");
+    return;
+  }
+
+  const dueDate = new Date(dateTime);
+  if (Number.isNaN(dueDate.getTime())) {
+    showMessage("Please choose a valid date and time.", true, "taskMessage");
+    return;
+  }
+
+  const button = $("addBtn");
+  if (button) {
+    button.disabled = true;
+    button.textContent = "ADDING...";
+  }
+
+  try {
+    const { error } = await supabase.from("study_tasks").insert({
+      title,
+      subject,
+      due_at: dueDate.toISOString(),
+      completed: false
+    });
+
+    if (error) throw error;
+
+    $("taskForm")?.reset();
+    showMessage("Task added successfully.", false, "taskMessage");
+    await loadTasks();
+  } catch (error) {
+    console.error("Add task error:", error);
+    showMessage(error.message || "Could not add task.", true, "taskMessage");
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "＋ ADD TASK";
+    }
+  }
+}
+
+async function toggleTask(taskId, completed) {
+  if (!currentUser) return;
+
+  try {
+    const { error } = await supabase
+      .from("study_tasks")
+      .update({ completed })
+      .eq("id", taskId);
+
+    if (error) throw error;
+    await loadTasks();
+  } catch (error) {
+    console.error("Update task error:", error);
+    showMessage("Could not update this task.", true, "taskMessage");
+    await loadTasks();
+  }
+}
+
+async function deleteTask(taskId) {
+  if (!currentUser) return;
+  if (!window.confirm("Delete this task? This cannot be undone.")) return;
+
+  try {
+    const { error } = await supabase
+      .from("study_tasks")
+      .delete()
+      .eq("id", taskId);
+
+    if (error) throw error;
+
+    showMessage("Task deleted.", false, "taskMessage");
+    await loadTasks();
+  } catch (error) {
+    console.error("Delete task error:", error);
+    showMessage("Could not delete this task.", true, "taskMessage");
+  }
+}
+
+/* TASK CARDS */
+
+function taskCard(task) {
+  const done = isCompleted(task);
+
+  return `
+    <article class="task ${done ? "done" : ""}">
+      <input
+        type="checkbox"
+        ${done ? "checked" : ""}
+        data-task-check="${escapeHTML(task.id)}"
+        aria-label="Mark task completed"
+      >
+      <div class="task-main">
+        <div class="task-title">${escapeHTML(task.title)}</div>
+        <div class="task-meta">
+          <span>${escapeHTML(task.subject || "General")}</span>
+          <span>◷ ${escapeHTML(taskSchedule(task))}</span>
+        </div>
+      </div>
+      <div class="task-actions">
+        <button class="btn small danger" type="button"
+          data-task-delete="${escapeHTML(task.id)}"
+          aria-label="Delete task" title="Delete task">×</button>
+      </div>
+    </article>
+  `;
+}
+
+function renderTodayTasks() {
+  const container = $("todayTasks");
+  if (!container) return;
+
+  const todayTasks = tasks.filter(task =>
+    taskDateKey(task) === todayString() && !isCompleted(task)
+  );
+
+  container.innerHTML = todayTasks.length
+    ? todayTasks.map(taskCard).join("")
+    : `<div class="empty">No tasks scheduled for today.</div>`;
+}
+
+function renderTaskList() {
+  const container = $("taskList");
+  if (!container) return;
+
+  let filtered = [...tasks];
+
+  if (activeFilter === "active") {
+    filtered = filtered.filter(task => !isCompleted(task));
+  } else if (activeFilter === "done") {
+    filtered = filtered.filter(isCompleted);
+  }
+
+  container.innerHTML = filtered.length
+    ? filtered.map(taskCard).join("")
+    : `<div class="empty">No tasks found. Add a task or select another filter.</div>`;
+}
+
+/* DASHBOARD AND PROGRESS */
+
+function renderStats() {
+  const total = tasks.length;
+  const done = tasks.filter(isCompleted).length;
+  const remaining = total - done;
+  const percent = total ? Math.round(done / total * 100) : 0;
+
+  const values = {
+    totalCount: total,
+    doneCount: done,
+    remainingCount: remaining,
+    progressText: `${percent}%`,
+    progressLabel: `${percent}%`,
+    statTotal: total,
+    statDone: done,
+    statActive: remaining,
+    statPercent: `${percent}%`,
+    statLabel: `${percent}%`
+  };
+
+  Object.entries(values).forEach(([id, value]) => {
+    if ($(id)) $(id).textContent = value;
+  });
+
+  ["progressFill", "progressFill2", "statFill"].forEach(id => {
+    if ($(id)) $(id).style.width = `${percent}%`;
+  });
+}
+
+function renderAllTasks() {
+  renderTodayTasks();
+  renderTaskList();
+  renderStats();
+  renderCalendar();
+  renderSelectedDateTasks();
+}
+
+/* TASK EVENTS */
+
+$("taskForm")?.addEventListener("submit", addTask);
+$("loginBtn")?.addEventListener("click", logIn);
+$("signupBtn")?.addEventListener("click", signUp);
+$("logoutBtn")?.addEventListener("click", logOut);
+
+document.addEventListener("change", event => {
+  const checkbox = event.target.closest("[data-task-check]");
+  if (checkbox) {
+    toggleTask(checkbox.dataset.taskCheck, checkbox.checked);
+  }
+});
+
+document.addEventListener("click", event => {
+  const button = event.target.closest("[data-task-delete]");
+  if (button) deleteTask(button.dataset.taskDelete);
+});
+
+document.querySelectorAll("[data-filter]").forEach(button => {
+  button.addEventListener("click", () => {
+    activeFilter = button.dataset.filter || "all";
+
+    document.querySelectorAll("[data-filter]").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+
+    renderTaskList();
+  });
+});
+
+/* NAVIGATION */
+
+function navigate(view) {
+  const pages = {
+    dashboard: "dashboardView",
+    calendar: "calendarView",
+    focus: "focusView",
+    progress: "progressView",
+    ai: "aiView"
+  };
+
+  Object.entries(pages).forEach(([name, id]) => {
+    const page = $(id);
+    if (!page) return;
+
+    const active = name === view;
+    page.classList.toggle("active", active);
+    page.style.display = active ? "block" : "none";
+  });
+
+  document.querySelectorAll("[data-view]").forEach(button => {
+    const active = button.dataset.view === view;
+    button.classList.toggle("active", active);
+
+    if (active) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+
+  const titles = {
+    dashboard: "Dashboard",
+    calendar: "Study Calendar",
+    focus: "Focus Timer",
+    progress: "Your Progress",
+    ai: "AI Study Assistant"
+  };
+
+  if ($("pageTitle")) {
+    $("pageTitle").textContent = titles[view] || "NEON STUDY PRO";
+  }
+
+  const welcome = document.querySelector(".welcome");
+  if (welcome) welcome.style.display = view === "dashboard" ? "" : "none";
+
+  if (view === "calendar") {
+    renderCalendar();
+    renderSelectedDateTasks();
+  }
+}
+
+document.querySelectorAll("[data-view]").forEach(button => {
+  button.addEventListener("click", () => navigate(button.dataset.view));
+});
+
+document.querySelectorAll("[data-go]").forEach(button => {
+  button.addEventListener("click", () => navigate(button.dataset.go));
+});
+
+/* CALENDAR */
+
+function renderCalendar() {
+  const grid = $("calendarGrid");
+  const title = $("monthTitle");
+  if (!grid) return;
+
+  const year = calendarMonth.getFullYear();
+  const month = calendarMonth.getMonth();
+
+  if (title) {
+    title.textContent = calendarMonth.toLocaleDateString("en-PH", {
+      month: "long", year: "numeric"
+    });
+  }
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = todayString();
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  let html = weekdays.map(day =>
+    `<div class="cal-day-name">${day}</div>`
+  ).join("");
+
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="cal-day muted-day" aria-hidden="true"></div>`;
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const key = dateKey(new Date(year, month, day));
+    const dayTasks = tasks.filter(task => taskDateKey(task) === key);
+
+    const classes = [
+      "cal-day",
+      key === today ? "today" : "",
+      key === dateKey(selectedDate) ? "selected" : "",
+      dayTasks.length ? "has-task" : ""
+    ].filter(Boolean).join(" ");
+
+    html += `
+      <button type="button" class="${classes}"
+        data-calendar-date="${key}"
+        aria-label="${key}${dayTasks.length ? `, ${dayTasks.length} tasks` : ""}">
+        ${day}
+      </button>
+    `;
+  }
+
+  grid.innerHTML = html;
+}
+
+function renderSelectedDateTasks() {
+  const container = $("calendarTasks");
+  const heading = $("selectedDateTitle");
+  const key = dateKey(selectedDate);
+
+  if (heading) {
+    heading.textContent = selectedDate.toLocaleDateString("en-PH", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    });
+  }
+
+  if (!container) return;
+
+  const selectedTasks = tasks.filter(task => taskDateKey(task) === key);
+
+  container.innerHTML = selectedTasks.length
+    ? selectedTasks.map(taskCard).join("")
+    : `<div class="empty">No tasks for this date.</div>`;
+}
+
+$("prevMonth")?.addEventListener("click", () => {
+  calendarMonth = new Date(
+    calendarMonth.getFullYear(),
+    calendarMonth.getMonth() - 1,
+    1
+  );
+  renderCalendar();
+});
+
+$("nextMonth")?.addEventListener("click", () => {
+  calendarMonth = new Date(
+    calendarMonth.getFullYear(),
+    calendarMonth.getMonth() + 1,
+    1
+  );
+  renderCalendar();
+});
+
+$("calendarGrid")?.addEventListener("click", event => {
+  const button = event.target.closest("[data-calendar-date]");
+  if (!button) return;
+
+  const [year, month, day] = button.dataset.calendarDate.split("-").map(Number);
+  selectedDate = new Date(year, month - 1, day);
+
+  renderCalendar();
+  renderSelectedDateTasks();
+});
+
+/* FOCUS TIMER */
+
+function updateTimerDisplay() {
+  const minutes = Math.floor(timerSeconds / 60);
+  const seconds = timerSeconds % 60;
+
+  if ($("timerClock")) {
+    $("timerClock").textContent =
+      `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  }
+
+  if ($("timerCaption")) {
+    $("timerCaption").textContent = timerRunning
+      ? "STAY FOCUSED"
+      : "READY WHEN YOU ARE";
+  }
+
+  if ($("timerStart")) {
+    $("timerStart").textContent = timerRunning ? "Ⅱ PAUSE" : "▶ START";
+  }
+}
+
+function stopTimer() {
+  if (timerInterval !== null) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  timerRunning = false;
+  updateTimerDisplay();
+}
+
+function startTimer() {
+  if (timerRunning) {
+    stopTimer();
+    return;
+  }
+
+  if (timerSeconds <= 0) timerSeconds = timerMode * 60;
+
+  timerRunning = true;
+  updateTimerDisplay();
+
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+
+    if (timerSeconds <= 0) {
+      timerSeconds = 0;
+      stopTimer();
+
+      if ($("timerCaption")) {
+        $("timerCaption").textContent = "SESSION COMPLETE!";
+      }
+
+      window.alert("Focus session complete! Take a short break.");
+      return;
+    }
+
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function resetTimer() {
+  stopTimer();
+  timerSeconds = timerMode * 60;
+  updateTimerDisplay();
+}
+
+$("timerStart")?.addEventListener("click", startTimer);
+$("timerReset")?.addEventListener("click", resetTimer);
+
+document.querySelectorAll("[data-minutes]").forEach(button => {
+  button.addEventListener("click", () => {
+    const minutes = Number(button.dataset.minutes);
+    if (!Number.isFinite(minutes) || minutes < 1) return;
+
+    timerMode = minutes;
+    resetTimer();
+
+    document.querySelectorAll("[data-minutes]").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+  });
+});
+
+/* INITIALIZE */
+
+async function initializeApp() {
+  const todayLabel = $("todayLabel");
+
+  if (todayLabel) {
+    todayLabel.textContent = new Date().toLocaleDateString("en-PH", {
+      weekday: "long", month: "long", day: "numeric", year: "numeric"
+    });
+  }
+
+  updateTimerDisplay();
+  renderAllTasks();
+  navigate("dashboard");
+
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) throw error;
+
+    currentUser = data?.session?.user || null;
+    updateSessionUI();
+
+    if (currentUser) await loadTasks();
+  } catch (error) {
+    console.error("Initialization error:", error);
+    setConnection("CONNECTION ERROR");
+    showMessage(
+      error.message || "Could not connect to Supabase.",
+      true
+    );
+  }
+
+  supabase.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user || null;
+    updateSessionUI();
+
+    if (currentUser) {
+      setTimeout(() => loadTasks(), 0);
+    }
+  });
+}
+
+initializeApp();
+</script>
+</body>
+</html>
