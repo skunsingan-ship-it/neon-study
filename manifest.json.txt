@@ -1,0 +1,18 @@
+{
+  "name": "NEON STUDY",
+  "short_name": "NEON STUDY",
+  "description": "Your personal study planner",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080b14",
+  "theme_color": "#080b14",
+  "icons": [
+    {
+      "src": "./neon-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
