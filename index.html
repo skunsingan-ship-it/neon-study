@@ -524,6 +524,7 @@ main {
 </section>
 
 <div id="plannerSection" class="hidden">
+  <button id="enablePushBtn" type="button">🔔 Enable Notifications</button>
 <section class="welcome">
   <div class="eyebrow">YOUR NEXT LEVEL STARTS HERE</div>
   <h1>Plan smart.<br><span>Study better.</span></h1>
@@ -656,6 +657,73 @@ const SUPABASE_KEY = "sb_publishable_eA6nIMeSrKaiouIxlMBVuA_MfNTSdQ7";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const $ = id => document.getElementById(id);
+const VAPID_PUBLIC_KEY = "BEj9ijFpfuHxVrkhG_qJiV165x3xmD8Eq5W9-HYqKuobYntpLsmonMhLN8QRTP84ZCiTZ0lKjIsxGBP_QRHK9O8";
+async function enablePushNotifications() {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+    alert("Push notifications are not supported in this browser.");
+    return;
+  }
+
+  if (!("Notification" in window)) {
+    alert("Notifications are not supported in this browser.");
+    return;
+  }
+
+  try {
+    const { data: { user }, error: userError } =
+      await supabase.auth.getUser();
+
+    if (userError || !user) {
+      alert("Please log in to NEON STUDY first.");
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      alert("Please allow notifications in your browser settings.");
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+    let subscription = await registration.pushManager.getSubscription();
+
+    if (!subscription) {
+      const key = VAPID_PUBLIC_KEY.replace(/-/g, "+").replace(/_/g, "/");
+      const paddedKey = key + "=".repeat((4 - key.length % 4) % 4);
+
+      const applicationServerKey = Uint8Array.from(
+        atob(paddedKey),
+        c => c.charCodeAt(0)
+      );
+
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey
+      });
+    }
+
+    const { error } = await supabase
+      .from("push_subscriptions")
+      .upsert({
+        user_id: user.id,
+        subscription: subscription.toJSON()
+      }, { onConflict: "user_id,subscription" });
+
+    if (error) throw error;
+
+    alert("Push notifications enabled successfully!");
+  } catch (error) {
+    console.error("Push setup error:", error);
+    alert("Could not enable notifications: " + error.message);
+  }
+}
+
+const pushButton = document.getElementById("enablePushBtn");
+
+if (pushButton) {
+  pushButton.addEventListener("click", enablePushNotifications);
+}
 
 const introScreen = document.getElementById("introScreen");
 const enterAppBtn = document.getElementById("enterAppBtn");
@@ -679,7 +747,6 @@ let timerSeconds = 25 * 60;
 let timerInterval = null;
 let timerRunning = false;
 let timerMode = 25;
-
 /* HELPERS */
 
 function escapeHTML(value) {
