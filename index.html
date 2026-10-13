@@ -1505,25 +1505,43 @@ async function initializeApp() {
 }
 
 initializeApp();
+/* AI ASSISTANT */
 
+async function prepareAI(mode) {
+const notes = document.getElementById("aiNotes")?.value.trim();
+const status = document.getElementById("aiStatus");
+const result = document.getElementById("aiResult");
+if (!notes) {
+status.textContent = "Please enter your lesson or notes first.";
+result.textContent = "";
+return;
+}
+status.textContent = "AI is thinking...";
+result.textContent = "";
+try {
+const { data, error } = await supabase.functions.invoke("ai-assistant", {
+body: { mode, notes }
+});
+if (error) throw error;
+if (!data?.success) throw new Error(data?.error || "AI request failed.");
+result.textContent = data.result;
+status.textContent = "Done! Your study material is ready.";
+} catch (error) {
+console.error("AI assistant error:", error);
+status.textContent = error.message || "Could not connect to AI. Please try again.";
+}
+}
 /* SERVICE WORKER */
-
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .then((registration) => {
-        console.log(
-          "NEON STUDY service worker ready:",
-          registration.scope
-        );
-      })
-      .catch((error) => {
-        console.error(
-          "Service worker registration failed:",
-          error
-        );
-      });
-  });
+window.addEventListener("load", () => {
+navigator.serviceWorker.register("./service-worker.js")
+.then((registration) => {
+console.log("NEON STUDY service worker ready:", registration.scope);
+})
+.catch((error) => {
+console.error("Service worker registration failed:", error);
+});
+});
 }
 </script>
 </body>
