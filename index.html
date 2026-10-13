@@ -635,15 +635,20 @@ main {
 </section>
 
 <section id="aiView" class="view">
-  <section class="panel">
-    <div class="eyebrow">COMING IN THE FINAL PHASE</div>
-    <h3 class="section-title" style="margin-top:12px">✧ AI Study Assistant</h3>
-    <p style="color:var(--muted);line-height:1.8">Our last feature will add study explanations, reviewer generation, and quiz practice. We will connect it after the planner, calendar, and timer are tested.</p>
-    <div class="quick-grid">
-      <div class="quick-btn"><span>✎</span><strong>Reviewer generator</strong><small>Turn notes into study guides</small></div>
-      <div class="quick-btn"><span>?</span><strong>Quiz practice</strong><small>Practice by topic</small></div>
-    </div>
-  </section>
+<section class="panel">
+<div class="eyebrow">NEON STUDY PRO // AI LEARNING</div>
+<h3 class="section-title" style="margin-top:12px">✧ AI Study Assistant</h3>
+<p style="color:var(--muted);line-height:1.8">Your personal study companion. Understand lessons, generate reviewers, and practice with quizzes.</p>
+<label for="aiNotes">Your lesson or notes</label>
+<textarea id="aiNotes" placeholder="Paste your lesson or notes here..." rows="6" style="width:100%;box-sizing:border-box;margin-top:8px;padding:12px;border-radius:12px;background:var(--bg);color:var(--text);border:1px solid var(--border);"></textarea>
+<div class="quick-grid" style="margin-top:14px">
+<button class="quick-btn" type="button" onclick="prepareAI('explain')"><span>✧</span><strong>Explain Lesson</strong><small>Understand difficult topics</small></button>
+<button class="quick-btn" type="button" onclick="prepareAI('reviewer')"><span>✎</span><strong>Reviewer Generator</strong><small>Turn notes into a study guide</small></button>
+<button class="quick-btn" type="button" onclick="prepareAI('quiz')"><span>?</span><strong>Quiz Practice</strong><small>Practice what you learned</small></button>
+</div>
+<div id="aiStatus" style="margin-top:16px;color:var(--muted);line-height:1.7">AI connection not configured yet.</div>
+<div id="aiResult" style="margin-top:12px;white-space:pre-wrap;line-height:1.8;overflow-wrap:anywhere"></div>
+</section>
 </section>
 </div>
 
