@@ -870,12 +870,22 @@ async function signUp() {
   if (button) button.disabled = true;
 
   try {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const redirectTo = "https://skunsingan-ship-it.github.io/neon-study/";
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectTo
+      }
+    });
+
     if (error) throw error;
 
-    showMessage(data.session
-      ? "Account created. You are now signed in."
-      : "Account created! Check your email if confirmation is required."
+    showMessage(
+      data.session
+        ? "Account created. You are now signed in."
+        : "Account created! Check your Gmail and click the confirmation link."
     );
   } catch (error) {
     showMessage(error.message || "Could not create your account.", true);
@@ -883,7 +893,6 @@ async function signUp() {
     if (button) button.disabled = false;
   }
 }
-
 async function logIn() {
   const email = $("email")?.value.trim();
   const password = $("password")?.value;
